@@ -1,0 +1,26 @@
+# API keys and secrets - NEVER commit these!
+config.py
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv
+
+# IDE files (optional, but good practice)
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,156 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>To-Do</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background-color: #000;
+            color: #fff;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #333;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            gap: 1px;
+        }
+
+        .left, .right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .label {
+            padding: 8px 16px;
+            font-size: 14px;
+            color: #aaa;
+            border-bottom: 1px solid #222;
+        }
+
+        textarea {
+            flex: 1;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            outline: none;
+            resize: none;
+            background-color: #000;
+            color: #fff;
+            font-size: 16px;
+            line-height: 1.5;
+            font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        .controls {
+            padding: 12px 16px;
+            border-top: 1px solid #222;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            background-color: #050505;
+        }
+
+        button {
+            background-color: #1f6feb;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2b7cff;
+        }
+
+        .status {
+            font-size: 13px;
+            color: #888;
+        }
+
+        pre {
+            flex: 1;
+            margin: 0;
+            padding: 16px;
+            overflow: auto;
+            background-color: #050505;
+            color: #e5e5e5;
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <header>To-Do</header>
+    <main>
+        <section class="left">
+            <div class="label">Your notes (one item per line)</div>
+            <textarea id="notes" placeholder="Type your to-do items or notes here..."></textarea>
+            <div class="controls">
+                <button id="summarizeBtn">Summarize with AI</button>
+                <div class="status" id="status">Waiting for input...</div>
+            </div>
+        </section>
+        <section class="right">
+            <div class="label">Summary</div>
+            <pre id="summary">No summary yet.</pre>
+        </section>
+    </main>
+
+    <script>
+        const notesEl = document.getElementById('notes');
+        const summarizeBtn = document.getElementById('summarizeBtn');
+        const summaryEl = document.getElementById('summary');
+        const statusEl = document.getElementById('status');
+
+        summarizeBtn.addEventListener('click', async () => {
+            const text = notesEl.value;
+
+            statusEl.textContent = 'Summarizing...';
+            summaryEl.textContent = '';
+
+            try {
+                const response = await fetch('/summarize', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text }),
+                });
+
+                const data = await response.json();
+
+                // data.lines is our "array"
+                console.log('Lines array from server:', data.lines);
+
+                summaryEl.textContent = data.summary;
+                statusEl.textContent = `Captured ${data.lines.length} line(s) in the array.`;
+            } catch (err) {
+                console.error(err);
+                statusEl.textContent = 'Error talking to server.';
+                summaryEl.textContent = 'An error occurred.';
+            }
+        });
+    </script>
+</body>
+</html>
