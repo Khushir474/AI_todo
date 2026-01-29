@@ -1,0 +1,5 @@
+# config.py.example
+# Copy this file to config.py and fill in your actual API key
+
+OPENAI_API_KEY = "YOUR_API_KEY_HERE"  # Replace with your actual OpenAI API key
+OPENAI_MODEL = "gpt-4o-mini"  # Or another model you have access to
